@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\InstagramLink;
-
+use App\Models\GalleryItem;
+use App\Models\Tag;
 // Home Page
 Route::get('/', function () {
     $igPosts = InstagramLink::where('is_active', true)
@@ -30,6 +31,23 @@ Route::get('/order-form', function () {
 Route::get('/contact', function () {
     return view('pages.contact');
 })->name('contact');
+
+Route::get('/gallery', function () {
+    $tagSlug = request('tag');
+
+    $tags = Tag::orderBy('name')->get();
+
+    $items = GalleryItem::query()
+        ->where('is_active', true)
+        ->with('tags')
+        ->when($tagSlug, function ($q) use ($tagSlug) {
+            $q->whereHas('tags', fn($t) => $t->where('slug', $tagSlug));
+        })
+        ->orderBy('sort_order')
+        ->get();
+
+    return view('pages.gallery', compact('items', 'tags', 'tagSlug'));
+})->name('gallery');
 
 // Admin Login & Logout
 use Illuminate\Http\Request;
@@ -73,6 +91,10 @@ Route::middleware('auth')->group(function () {
     ->name('admin.menu.reorder');
     Route::resource('admin/instagram-links', App\Http\Controllers\Admin\InstagramLinkController::class)
     ->names('admin.instagram-links');
+    Route::resource('admin/gallery', App\Http\Controllers\Admin\GalleryController::class)
+    ->names('admin.gallery');
+        Route::resource('admin/tags', App\Http\Controllers\Admin\TagController::class)
+            ->names('admin.tags');
 
 
 });
