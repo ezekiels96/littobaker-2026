@@ -38,7 +38,7 @@
                     'text-[#F53003] border-[#F53003]' => Route::is('about'),
                     'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('about'),
                 ])>About</a>
-                <a href="{{ route('menu') }}" @class([
+                <a href="{{ route('menu.index') }}" @class([
                     'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
                     'text-[#F53003] border-[#F53003]' => Route::is('menu'),
                     'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('menu'),
@@ -57,17 +57,12 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="mx-auto max-w-6xl px-4 pb-16 pt-0">
+        <main class="mx-auto max-w-6xl px-4 pt-0">
             @yield('content')
         </main>
 
-        <!-- Chatbox Placeholder -->
-        <div class="fixed bottom-6 right-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#F53003] text-2xl text-white shadow-xl ring-4 ring-[#F53003]/20" title="Open Chat">
-            💬
-        </div>
-
         <!-- Footer -->
-        <footer class="mt-20 bg-[#1b1b18] py-10 text-center text-sm text-white">
+        <footer class="bg-[#1b1b18] py-10 text-center text-sm text-white">
             <div class="mx-auto max-w-4xl space-y-2">
                 <p>&copy; 2026 littobaker. All rights reserved.</p>
                 <p class="text-xs uppercase tracking-[0.3em] text-white/70">Home Bakery · Sunnyvale, CA</p>
