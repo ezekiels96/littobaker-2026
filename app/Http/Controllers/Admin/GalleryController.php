@@ -23,88 +23,89 @@ class GalleryController extends Controller
         return view('admin.pages.gallery.create', compact('tags'));
     }
 
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'title'    => ['nullable', 'string', 'max:255'],
-            'caption'  => ['nullable', 'string'],
-            'image'    => ['required', 'image', 'max:8192'], // 8MB
-            'tags'     => ['nullable', 'array'],
-            'tags.*'   => ['string', 'max:50'],
-            'is_active'=> ['nullable', 'boolean'],
-        ]);
+public function store(Request $request)
+{
+    $data = $request->validate([
+        'title'     => ['nullable', 'string', 'max:255'],
+        'caption'   => ['nullable', 'string'],
+        'image_url' => ['required', 'url', 'max:2000'],
+        'tags_csv'  => ['nullable', 'string', 'max:1000'],
+        'is_active' => ['nullable', 'boolean'],
+    ]);
+    $data['is_active'] = (bool)($data['is_active'] ?? false);
 
-        $data['is_active'] = (bool)($data['is_active'] ?? false);
+    $item = GalleryItem::create([
+        'title'      => $data['title'] ?? null,
+        'caption'    => $data['caption'] ?? null,
+        'image_url'  => $data['image_url'],
+        'is_active'  => $data['is_active'],
+        'sort_order' => (GalleryItem::max('sort_order') ?? 0) + 1,
+        // keep this if column exists; otherwise remove:
+        'cloudinary_public_id' => null,
+    ]);
 
-        // upload to Cloudinary
-        $uploaded = Cloudinary::upload(
-            $request->file('image')->getRealPath(),
-            ['folder' => 'littobaker/gallery']
-        );
+    $tags = collect(explode(',', $data['tags_csv'] ?? ''))
+        ->map(fn ($t) => trim($t))
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
 
-        $imageUrl = $uploaded->getSecurePath();
-        $publicId = $uploaded->getPublicId();
+    $this->syncTags($item, $tags);
 
-        $item = GalleryItem::create([
-            'title' => $data['title'] ?? null,
-            'caption' => $data['caption'] ?? null,
-            'image_url' => $imageUrl,
-            'cloudinary_public_id' => $publicId,
-            'is_active' => $data['is_active'],
-            'sort_order' => (GalleryItem::max('sort_order') ?? 0) + 1,
-        ]);
+    return redirect()
+        ->route('admin.gallery.index')
+        ->with('success', 'Gallery item added ♡');
+}
 
-        $this->syncTags($item, $data['tags'] ?? []);
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Gallery item added ♡');
-    }
+public function show(GalleryItem $gallery)
+{
+    $gallery->load('tags');
+    return view('admin.pages.gallery.show', compact('gallery'));
+}
 
-    public function show(GalleryItem $gallery)
-    {
-        $gallery->load('tags');
-        return view('admin.pages.gallery.show', ['item' => $gallery]);
-    }
+public function edit(GalleryItem $gallery)
+{
+    $gallery->load('tags');
+    $tags = Tag::orderBy('name')->get();
+    return view('admin.pages.gallery.edit', compact('gallery', 'tags'));
+}
 
-    public function edit(GalleryItem $gallery)
-    {
-        $gallery->load('tags');
-        $tags = Tag::orderBy('name')->get();
-        return view('admin.pages.gallery.edit', ['item' => $gallery, 'tags' => $tags]);
-    }
 
-    public function update(Request $request, GalleryItem $gallery)
-    {
-        $data = $request->validate([
-            'title'    => ['nullable', 'string', 'max:255'],
-            'caption'  => ['nullable', 'string'],
-            'image'    => ['nullable', 'image', 'max:8192'],
-            'tags'     => ['nullable', 'array'],
-            'tags.*'   => ['string', 'max:50'],
-            'is_active'=> ['nullable', 'boolean'],
-        ]);
+public function update(Request $request, GalleryItem $gallery)
+{
+    $data = $request->validate([
+        'title'     => ['nullable', 'string', 'max:255'],
+        'caption'   => ['nullable', 'string'],
+        'image_url' => ['required', 'url', 'max:2000'],
+        'tags_csv'  => ['nullable', 'string', 'max:1000'],
+        'is_active' => ['nullable', 'boolean'],
+    ]);
 
-        $data['is_active'] = (bool)($data['is_active'] ?? false);
+    $data['is_active'] = (bool)($data['is_active'] ?? false);
 
-        // optional new upload
-        if ($request->hasFile('image')) {
-            $uploaded = Cloudinary::upload(
-                $request->file('image')->getRealPath(),
-                ['folder' => 'littobaker/gallery']
-            );
+    $gallery->update([
+        'title'     => $data['title'] ?? null,
+        'caption'   => $data['caption'] ?? null,
+        'image_url' => $data['image_url'],
+        'is_active' => $data['is_active'],
+        'cloudinary_public_id' => null, // optional
+    ]);
 
-            $gallery->image_url = $uploaded->getSecurePath();
-            $gallery->cloudinary_public_id = $uploaded->getPublicId();
-        }
+    $tags = collect(explode(',', $data['tags_csv'] ?? ''))
+        ->map(fn ($t) => trim($t))
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
 
-        $gallery->title = $data['title'] ?? null;
-        $gallery->caption = $data['caption'] ?? null;
-        $gallery->is_active = $data['is_active'];
-        $gallery->save();
+    $this->syncTags($gallery, $tags);
 
-        $this->syncTags($gallery, $data['tags'] ?? []);
-
-        return redirect()->route('admin.gallery.index')->with('success', 'Gallery item updated ♡');
-    }
+    return redirect()
+        ->route('admin.gallery.index')
+        ->with('success', 'Gallery item updated ♡');
+}
 
     public function destroy(GalleryItem $gallery)
     {

@@ -43,6 +43,11 @@
                     'text-[#F53003] border-[#F53003]' => Route::is('menu'),
                     'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('menu'),
                 ])>Menu</a>
+                <a href="{{ route('gallery') }}" @class([
+                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                    'text-[#F53003] border-[#F53003]' => Route::is('gallery'),
+                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('gallery'),
+                ])>Gallery</a>
                 <a href="{{ route('order-form') }}" @class([
                     'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
                     'text-[#F53003] border-[#F53003]' => Route::is('order-form'),

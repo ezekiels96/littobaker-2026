@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\InstagramLink;
 use App\Models\GalleryItem;
 use App\Models\Tag;
+use App\Http\Controllers\GalleryPageController;
 // Home Page
 Route::get('/', function () {
     $igPosts = InstagramLink::where('is_active', true)
@@ -32,22 +33,8 @@ Route::get('/contact', function () {
     return view('pages.contact');
 })->name('contact');
 
-Route::get('/gallery', function () {
-    $tagSlug = request('tag');
+Route::get('/gallery', [GalleryPageController::class, 'index'])->name('gallery');
 
-    $tags = Tag::orderBy('name')->get();
-
-    $items = GalleryItem::query()
-        ->where('is_active', true)
-        ->with('tags')
-        ->when($tagSlug, function ($q) use ($tagSlug) {
-            $q->whereHas('tags', fn($t) => $t->where('slug', $tagSlug));
-        })
-        ->orderBy('sort_order')
-        ->get();
-
-    return view('pages.gallery', compact('items', 'tags', 'tagSlug'));
-})->name('gallery');
 
 // Admin Login & Logout
 use Illuminate\Http\Request;
