@@ -12,15 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gallery_item_tag', function (Blueprint $table) {
-            $table->foreignId('gallery_item_id')
-                ->constrained('gallery_items')
-                ->cascadeOnDelete();
+            $table->unsignedBigInteger('gallery_item_id');
+            $table->unsignedBigInteger('tag_id');
 
-            $table->foreignId('tag_id')
-                ->constrained('tags')
-                ->cascadeOnDelete();
+            $table->foreign('gallery_item_id')
+                ->references('id')->on('gallery_items')
+                ->onDelete('cascade');
+            $table->foreign('tag_id')
+                ->references('id')->on('tags')
+                ->onDelete('cascade');
 
             $table->primary(['gallery_item_id', 'tag_id']);
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
         });
     }
 
