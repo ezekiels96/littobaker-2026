@@ -143,7 +143,7 @@ class CartController extends Controller
 
         $total = $this->cartTotal($cart);
 
-        Mail::to('ezekielsung96@gmail.com')->send(new \App\Mail\OrderMail(array_merge($data, [
+        Mail::to(['ezekielsung96@gmail.com', 'nguyenjoanne98@gmail.com'])->send(new \App\Mail\OrderMail(array_merge($data, [
             'cart'  => $cart,
             'total' => $total,
         ])));

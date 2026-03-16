@@ -44,7 +44,7 @@
                             <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFC447]/60 to-[#F46EE5]/30 shadow-sm text-lg">✉️</div>
                             <div>
                                 <p class="font-['Sour_Gummy'] text-sm font-extrabold lowercase text-[#1b1b18]">email</p>
-                                <a href="mailto:ezekielsung96@gmail.com" class="font-['Sour_Gummy'] text-sm font-bold lowercase text-[#8f7cfa] hover:underline">ezekielsung96@gmail.com</a>
+                                <a href="mailto:nguyenjoanne98@gmail.com" class="font-['Sour_Gummy'] text-sm font-bold lowercase text-[#8f7cfa] hover:underline">nguyenjoanne98@gmail.com</a>
                             </div>
                         </div>
 

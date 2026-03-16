@@ -23,7 +23,7 @@ class ContactController extends Controller
             'message' => 'required|string|min:5|max:2000',
         ]);
 
-        Mail::to('ezekielsung96@gmail.com')->send(new ContactMail($data));
+        Mail::to(['ezekielsung96@gmail.com', 'nguyenjoanne98@gmail.com'])->send(new ContactMail($data));
 
         return back()->with('success', true);
     }
