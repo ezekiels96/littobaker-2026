@@ -66,6 +66,8 @@
                     $isMenu      = request()->is('admin/menu*');
                     $isGallery   = request()->is('admin/gallery*');
                     $isInstagram = request()->is('admin/instagram-links*');
+                    $isAbout     = request()->is('admin/about*');
+                    $isHome      = request()->is('admin/home*');
 
 
                     $baseLink = 'rounded-full px-4 py-2 font-gummy font-extrabold lowercase transition border';
@@ -92,6 +94,15 @@
                     <a href="{{ route('admin.instagram-links.index') }}"
                     class="{{ $baseLink }} {{ $isInstagram ? $active : $inactive }}">
                         instagram
+                    </a>
+
+                    <a href="{{ route('admin.home.edit') }}"
+                       class="{{ $baseLink }} {{ $isHome ? $active : $inactive }}">
+                        home page
+                    </a>
+                    <a href="{{ route('admin.about.edit') }}"
+                       class="{{ $baseLink }} {{ $isAbout ? $active : $inactive }}">
+                        about page
                     </a>
 
                     <a href="/"
