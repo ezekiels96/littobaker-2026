@@ -29,47 +29,107 @@
 
         <!-- Navigation Menu -->
         <nav class="sticky top-0 z-30 border-b border-[#e3e3e0] bg-white shadow-sm">
-            <div class="relative mx-auto flex max-w-4xl flex-wrap items-center justify-center">
-                <a href="{{ route('home') }}" @class([
-                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
-                    'text-[#F53003] border-[#F53003]' => Route::is('home'),
-                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('home'),
-                ])>Home</a>
-                <a href="{{ route('about') }}" @class([
-                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
-                    'text-[#F53003] border-[#F53003]' => Route::is('about'),
-                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('about'),
-                ])>About</a>
-                <a href="{{ route('menu.index') }}" @class([
-                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
-                    'text-[#F53003] border-[#F53003]' => Route::is('menu'),
-                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('menu'),
-                ])>Menu</a>
-                <a href="{{ route('gallery') }}" @class([
-                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
-                    'text-[#F53003] border-[#F53003]' => Route::is('gallery'),
-                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('gallery'),
-                ])>Gallery</a>
-                <a href="{{ route('order-form') }}" @class([
-                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
-                    'text-[#F53003] border-[#F53003]' => Route::is('order-form'),
-                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('order-form'),
-                ])>Order Form</a>
-                <a href="{{ route('contact') }}" @class([
-                    'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
-                    'text-[#F53003] border-[#F53003]' => Route::is('contact'),
-                    'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('contact'),
-                ])>Contact</a>
+            <div class="mx-auto max-w-4xl">
+                <div class="flex items-center justify-between px-4 py-3 md:hidden">
+                    <button id="mobileMenuToggle"
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-[#1b1b18] shadow-sm transition hover:bg-[#fdf7f3]"
+                            aria-label="Toggle navigation menu"
+                            aria-expanded="false"
+                            aria-controls="mobileMenuPanel">
+                        <svg id="menuOpenIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                        </svg>
+                        <svg id="menuCloseIcon" xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
 
-                <!-- Cart Button -->
-                <button id="cartToggle"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FFC447] to-[#F46EE5] px-3 py-1.5 text-xs font-bold text-[#1b1b18] shadow transition hover:scale-105 hover:shadow-md"
-                        aria-label="Open cart">
-                    <span class="text-sm">🛒</span>
-                    <span id="cartBadge" class="min-w-[18px] rounded-full bg-[#1b1b18] px-1.5 py-0.5 text-center text-[10px] font-bold text-white">
-                        {{ count(session('cart', [])) > 0 ? array_sum(array_column(session('cart', []), 'quantity')) : '0' }}
-                    </span>
-                </button>
+                    <a href="{{ route('home') }}" class="font-semibold uppercase tracking-[0.28em] text-[11px] text-[#1b1b18]">littobaker</a>
+
+                    <button class="cart-toggle inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FFC447] to-[#F46EE5] px-3 py-1.5 text-xs font-bold text-[#1b1b18] shadow transition hover:scale-105 hover:shadow-md"
+                            aria-label="Open cart">
+                        <span class="text-sm">🛒</span>
+                        <span class="min-w-[18px] rounded-full bg-[#1b1b18] px-1.5 py-0.5 text-center text-[10px] font-bold text-white cart-badge">
+                            {{ count(session('cart', [])) > 0 ? array_sum(array_column(session('cart', []), 'quantity')) : '0' }}
+                        </span>
+                    </button>
+                </div>
+
+                <div id="mobileMenuPanel" class="hidden border-t border-black/5 bg-[#fffaf6] px-4 pb-4 md:hidden">
+                    <div class="grid gap-1 pt-3">
+                        <a href="{{ route('home') }}" @class([
+                            'rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition',
+                            'bg-white text-[#F53003] ring-1 ring-[#F53003]/20' => Route::is('home'),
+                            'text-[#1b1b18] hover:bg-white/80' => ! Route::is('home'),
+                        ])>Home</a>
+                        <a href="{{ route('about') }}" @class([
+                            'rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition',
+                            'bg-white text-[#F53003] ring-1 ring-[#F53003]/20' => Route::is('about'),
+                            'text-[#1b1b18] hover:bg-white/80' => ! Route::is('about'),
+                        ])>About</a>
+                        <a href="{{ route('menu.index') }}" @class([
+                            'rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition',
+                            'bg-white text-[#F53003] ring-1 ring-[#F53003]/20' => Route::is('menu') || Route::is('menu.*'),
+                            'text-[#1b1b18] hover:bg-white/80' => ! (Route::is('menu') || Route::is('menu.*')),
+                        ])>Menu</a>
+                        <a href="{{ route('gallery') }}" @class([
+                            'rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition',
+                            'bg-white text-[#F53003] ring-1 ring-[#F53003]/20' => Route::is('gallery'),
+                            'text-[#1b1b18] hover:bg-white/80' => ! Route::is('gallery'),
+                        ])>Gallery</a>
+                        <a href="{{ route('order-form') }}" @class([
+                            'rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition',
+                            'bg-white text-[#F53003] ring-1 ring-[#F53003]/20' => Route::is('order-form'),
+                            'text-[#1b1b18] hover:bg-white/80' => ! Route::is('order-form'),
+                        ])>Order Form</a>
+                        <a href="{{ route('contact') }}" @class([
+                            'rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition',
+                            'bg-white text-[#F53003] ring-1 ring-[#F53003]/20' => Route::is('contact'),
+                            'text-[#1b1b18] hover:bg-white/80' => ! Route::is('contact'),
+                        ])>Contact</a>
+                    </div>
+                </div>
+
+                <div class="relative hidden flex-wrap items-center justify-center md:flex">
+                    <a href="{{ route('home') }}" @class([
+                        'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                        'text-[#F53003] border-[#F53003]' => Route::is('home'),
+                        'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('home'),
+                    ])>Home</a>
+                    <a href="{{ route('about') }}" @class([
+                        'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                        'text-[#F53003] border-[#F53003]' => Route::is('about'),
+                        'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('about'),
+                    ])>About</a>
+                    <a href="{{ route('menu.index') }}" @class([
+                        'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                        'text-[#F53003] border-[#F53003]' => Route::is('menu') || Route::is('menu.*'),
+                        'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! (Route::is('menu') || Route::is('menu.*')),
+                    ])>Menu</a>
+                    <a href="{{ route('gallery') }}" @class([
+                        'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                        'text-[#F53003] border-[#F53003]' => Route::is('gallery'),
+                        'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('gallery'),
+                    ])>Gallery</a>
+                    <a href="{{ route('order-form') }}" @class([
+                        'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                        'text-[#F53003] border-[#F53003]' => Route::is('order-form'),
+                        'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('order-form'),
+                    ])>Order Form</a>
+                    <a href="{{ route('contact') }}" @class([
+                        'px-6 py-4 text-xs font-semibold uppercase tracking-[0.25em] transition duration-200 border-b-2',
+                        'text-[#F53003] border-[#F53003]' => Route::is('contact'),
+                        'text-[#1b1b18] border-transparent hover:text-[#F53003]' => ! Route::is('contact'),
+                    ])>Contact</a>
+
+                    <button class="cart-toggle absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FFC447] to-[#F46EE5] px-3 py-1.5 text-xs font-bold text-[#1b1b18] shadow transition hover:scale-105 hover:shadow-md"
+                            aria-label="Open cart">
+                        <span class="text-sm">🛒</span>
+                        <span class="min-w-[18px] rounded-full bg-[#1b1b18] px-1.5 py-0.5 text-center text-[10px] font-bold text-white cart-badge">
+                            {{ count(session('cart', [])) > 0 ? array_sum(array_column(session('cart', []), 'quantity')) : '0' }}
+                        </span>
+                    </button>
+                </div>
             </div>
         </nav>
 
@@ -172,11 +232,11 @@
         <!-- Cart JS -->
         <script>
         (() => {
-            const toggle    = document.getElementById('cartToggle');
+            const cartToggles = document.querySelectorAll('.cart-toggle');
             const drawer    = document.getElementById('cartDrawer');
             const overlay   = document.getElementById('cartOverlay');
             const closeBtn  = document.getElementById('cartClose');
-            const badge     = document.getElementById('cartBadge');
+            const badges    = document.querySelectorAll('.cart-badge');
             const itemsEl   = document.getElementById('cartItems');
             const emptyEl   = document.getElementById('cartEmpty');
             const footerEl  = document.getElementById('cartFooter');
@@ -187,6 +247,10 @@
             const chkSucc   = document.getElementById('checkoutSuccess');
             const submitBtn = document.getElementById('submitOrder');
             const coError   = document.getElementById('coError');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenuPanel  = document.getElementById('mobileMenuPanel');
+            const menuOpenIcon     = document.getElementById('menuOpenIcon');
+            const menuCloseIcon    = document.getElementById('menuCloseIcon');
 
             let cartData = [];
 
@@ -196,9 +260,27 @@
             function closeCart() { drawer.classList.add('translate-x-full'); overlay.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); }
             window.closeCart = closeCart;
 
-            toggle.addEventListener('click', openCart);
+            cartToggles.forEach(btn => btn.addEventListener('click', openCart));
             closeBtn.addEventListener('click', closeCart);
             overlay.addEventListener('click', closeCart);
+
+            if (mobileMenuToggle && mobileMenuPanel) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenuPanel.classList.toggle('hidden');
+                    mobileMenuToggle.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+                    menuOpenIcon?.classList.toggle('hidden', !isHidden);
+                    menuCloseIcon?.classList.toggle('hidden', isHidden);
+                });
+
+                mobileMenuPanel.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenuPanel.classList.add('hidden');
+                        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                        menuOpenIcon?.classList.remove('hidden');
+                        menuCloseIcon?.classList.add('hidden');
+                    });
+                });
+            }
 
             chkToggle.addEventListener('click', () => {
                 chkForm.classList.toggle('hidden');
@@ -212,7 +294,9 @@
             }
 
             function renderCart(data) {
-                badge.textContent = data.count;
+                badges.forEach(badge => {
+                    badge.textContent = data.count;
+                });
                 metaEl.textContent = data.count === 1 ? '1 item' : data.count + ' items';
                 totalEl.textContent = '$' + parseFloat(data.total).toFixed(2);
 
@@ -277,7 +361,9 @@
             }
 
             function updateBadgeAndRender(data) {
-                badge.textContent = data.cart_count;
+                badges.forEach(badge => {
+                    badge.textContent = data.cart_count;
+                });
                 fetchCart();
             }
 
@@ -297,7 +383,9 @@
             window.addToCart = function(menuId, quantity, notes) {
                 return cartAction('/cart/add', { menu_id: menuId, quantity, notes })
                     .then(data => {
-                        badge.textContent = data.cart_count;
+                        badges.forEach(badge => {
+                            badge.textContent = data.cart_count;
+                        });
                         return data;
                     });
             };
@@ -323,7 +411,9 @@
                             chkForm.classList.add('hidden');
                             chkToggle.classList.add('hidden');
                             chkSucc.classList.remove('hidden');
-                            badge.textContent = '0';
+                            badges.forEach(badge => {
+                                badge.textContent = '0';
+                            });
                             setTimeout(() => {
                                 closeCart();
                                 chkSucc.classList.add('hidden');
@@ -353,7 +443,11 @@
             // Initialize badge on page load
             fetch('{{ route("cart.get") }}')
                 .then(r => r.json())
-                .then(data => { badge.textContent = data.count; });
+                .then(data => {
+                    badges.forEach(badge => {
+                        badge.textContent = data.count;
+                    });
+                });
         })();
         </script>
 
