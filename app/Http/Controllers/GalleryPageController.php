@@ -17,6 +17,9 @@ class GalleryPageController extends Controller
             ->get();
 
         $tags = Tag::query()
+            ->whereHas('galleryItems', function ($query) {
+                $query->where('is_active', true);
+            })
             ->orderBy('name')
             ->get(['id', 'name']);
 

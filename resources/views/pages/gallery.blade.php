@@ -27,9 +27,18 @@
                     type="text"
                     placeholder="search by title, caption, tag..."
                     class="w-full rounded-full bg-white/80 px-12 py-3 font-['Sour_Gummy'] text-sm font-bold lowercase
-                           text-[#1b1b18] shadow ring-1 ring-black/5 outline-none
+                           text-[#1b1b18] shadow ring-1 ring-black/5 outline-none pr-12
                            focus:bg-white focus:ring-2 focus:ring-[#F46EE5]/30"
                 >
+                <button
+                    id="clearSearch"
+                    type="button"
+                    aria-label="clear search"
+                    class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/5 px-2 py-1
+                           text-xs font-extrabold text-[#1b1b18] hover:bg-black/10"
+                >
+                    ✕
+                </button>
             </div>
 
             {{-- Active tag pill --}}
@@ -38,6 +47,14 @@
                     tag: <span id="activeTagName" class="ml-1 text-[#F53003]"></span>
                     <button id="clearTag" type="button" class="ml-3 rounded-full bg-black/5 px-2 py-1 text-xs font-extrabold hover:bg-black/10">x</button>
                 </div>
+                <button
+                    id="clearFilters"
+                    type="button"
+                    class="rounded-full bg-white/80 px-4 py-2 font-['Sour_Gummy'] text-xs font-extrabold lowercase
+                           text-[#1b1b18] shadow ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-white"
+                >
+                    clear filters
+                </button>
             </div>
         </div>
 
@@ -220,6 +237,8 @@
     const activePill = document.getElementById('activeTagPill');
     const activeName = document.getElementById('activeTagName');
     const clearTag = document.getElementById('clearTag');
+    const clearSearch = document.getElementById('clearSearch');
+    const clearFilters = document.getElementById('clearFilters');
 
     let activeTag = '';
     let visibleCards = cards;
@@ -255,6 +274,11 @@
         }
     };
 
+    const updateClearSearch = () => {
+        const hasQuery = normalize(searchEl.value).length > 0;
+        clearSearch?.classList.toggle('hidden', !hasQuery);
+    };
+
     const applyFilter = () => {
         const q = normalize(searchEl.value);
         visibleCards = [];
@@ -272,6 +296,7 @@
         });
 
         noResults.classList.toggle('hidden', visibleCards.length > 0);
+        updateClearSearch();
     };
 
     // chip clicks
@@ -287,6 +312,20 @@
         activeTag = '';
         setChipActiveStyles();
         applyFilter();
+    });
+
+    clearSearch?.addEventListener('click', () => {
+        searchEl.value = '';
+        applyFilter();
+        searchEl.focus();
+    });
+
+    clearFilters?.addEventListener('click', () => {
+        activeTag = '';
+        searchEl.value = '';
+        setChipActiveStyles();
+        applyFilter();
+        searchEl.focus();
     });
 
     searchEl?.addEventListener('input', applyFilter);
@@ -352,6 +391,7 @@
     // init
     setChipActiveStyles();
     applyFilter();
+    updateClearSearch();
 })();
 </script>
 @endsection

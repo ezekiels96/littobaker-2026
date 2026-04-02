@@ -16,14 +16,43 @@
             <p class="mt-3 font-['Sour_Gummy'] text-base text-[#5a5246] lowercase">
                 browse below, add to cart, and we'll make your treats ♡
             </p>
-            <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/70 px-5 py-2 text-xs font-semibold text-[#706f6c] shadow">
-                <span>🛒</span>
-                <span>click the cart button (top right of nav) to review your order</span>
+            <div class="mt-4 flex flex-col items-center gap-3">
+                <div class="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/70 px-5 py-2 text-xs font-semibold text-[#706f6c] shadow">
+                    <span>🛒</span>
+                    <span>click the cart button (top right of nav) to review your order</span>
+                </div>
+                <div class="inline-flex flex-col items-center gap-1.5 rounded-2xl border border-black/5 bg-white/70 px-5 py-3 text-xs font-semibold text-[#706f6c] shadow">
+                    <span>must place your order 48 hours in advance of pickup</span>
+                    <span>pick up location will be sent the day of pickup or delivery service is available with fee</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6 w-full max-w-md">
+            <div class="relative">
+                <div class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#5a5246]/70">🔎</div>
+                <input
+                    id="orderSearch"
+                    type="text"
+                    placeholder="search the menu..."
+                    class="w-full rounded-full bg-white/80 px-12 py-3 font-['Sour_Gummy'] text-sm font-bold lowercase
+                           text-[#1b1b18] shadow ring-1 ring-black/5 outline-none pr-12
+                           focus:bg-white focus:ring-2 focus:ring-[#F46EE5]/30"
+                >
+                <button
+                    id="clearOrderSearch"
+                    type="button"
+                    aria-label="clear search"
+                    class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/5 px-2 py-1
+                           text-xs font-extrabold text-[#1b1b18] hover:bg-black/10"
+                >
+                    ✕
+                </button>
             </div>
         </div>
 
         {{-- Menu Grid --}}
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div id="orderGrid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($menus as $menu)
                 @php
                     $images = $menu->images?->pluck('image_url')->filter()->values() ?? collect();
@@ -36,7 +65,11 @@
                     };
                 @endphp
 
-                <article class="relative overflow-hidden rounded-3xl bg-white/90 shadow-xl ring-1 ring-black/5 backdrop-blur transition hover:-translate-y-0.5 hover:shadow-2xl flex flex-col">
+                <article
+                    class="order-card relative overflow-hidden rounded-3xl bg-white/90 shadow-xl ring-1 ring-black/5 backdrop-blur transition hover:-translate-y-0.5 hover:shadow-2xl flex flex-col"
+                    data-title="{{ strtolower($menu->title) }}"
+                    data-description="{{ strtolower($menu->description ?? '') }}"
+                >
 
                     {{-- Glow --}}
                     <div class="pointer-events-none absolute -top-20 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#FFC447]/30 to-[#F46EE5]/30 blur-3xl"></div>
@@ -129,11 +162,54 @@
             </div>
         @endif
 
+        <div id="orderNoResults" class="hidden mt-10 rounded-3xl bg-white/70 p-8 text-center shadow ring-1 ring-black/5">
+            <p class="font-['Sour_Gummy'] text-lg font-bold text-[#1b1b18] lowercase">no matches 🥲</p>
+            <p class="mt-2 font-['Sour_Gummy'] text-sm text-[#5a5246] lowercase">try a different search ♡</p>
+        </div>
+
     </div>
 </section>
 
 <script>
 (() => {
+    // Order search
+    const orderSearch = document.getElementById('orderSearch');
+    const clearOrderSearch = document.getElementById('clearOrderSearch');
+    const orderCards = Array.from(document.querySelectorAll('.order-card'));
+    const orderNoResults = document.getElementById('orderNoResults');
+
+    const normalize = (s) => (s || '').toLowerCase().trim();
+
+    const updateClearOrderSearch = () => {
+        const hasQuery = normalize(orderSearch?.value).length > 0;
+        clearOrderSearch?.classList.toggle('hidden', !hasQuery);
+    };
+
+    const applyOrderFilter = () => {
+        const q = normalize(orderSearch?.value);
+        let visible = 0;
+
+        orderCards.forEach(card => {
+            const title = normalize(card.dataset.title);
+            const desc = normalize(card.dataset.description);
+            const show = !q || title.includes(q) || desc.includes(q);
+            card.style.display = show ? '' : 'none';
+            if (show) visible += 1;
+        });
+
+        orderNoResults?.classList.toggle('hidden', visible > 0);
+        updateClearOrderSearch();
+    };
+
+    orderSearch?.addEventListener('input', applyOrderFilter);
+    clearOrderSearch?.addEventListener('click', () => {
+        orderSearch.value = '';
+        applyOrderFilter();
+        orderSearch.focus();
+    });
+
+    applyOrderFilter();
+
     // Quantity controls
     const quantities = {};
 
