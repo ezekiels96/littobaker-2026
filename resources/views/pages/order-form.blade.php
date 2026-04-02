@@ -19,7 +19,7 @@
             <div class="mt-4 flex flex-col items-center gap-3">
                 <div class="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/70 px-5 py-2 text-xs font-semibold text-[#706f6c] shadow">
                     <span>🛒</span>
-                    <span>click the cart button (top right of nav) to review your order</span>
+                    <span>click the cart button to review your order</span>
                 </div>
                 <div class="inline-flex flex-col items-center gap-1.5 rounded-2xl border border-black/5 bg-white/70 px-5 py-3 text-xs font-semibold text-[#706f6c] shadow">
                     <span>must place your order 48 hours in advance of pickup</span>
