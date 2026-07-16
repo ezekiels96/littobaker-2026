@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Mail;
 
 class WvacAttendanceController extends Controller
 {
-    /** Address that receives the submitted attendance stats. */
-    private const RECIPIENT = 'ezekielsung96@gmail.com';
+    /** Addresses that receive the submitted attendance stats. */
+    private const RECIPIENTS = ['ezekielsung96@gmail.com', 'bettysung@gmail.com'];
 
     /** Today if it's Sunday, otherwise the upcoming Sunday. */
     private function defaultSunday(): Carbon
@@ -223,7 +223,7 @@ class WvacAttendanceController extends Controller
             ];
         }
 
-        Mail::to(self::RECIPIENT)->send(
+        Mail::to(self::RECIPIENTS)->send(
             new AttendanceMail($dateStr, $date->format('l, F j, Y'), $payload)
         );
 
