@@ -37,6 +37,14 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 // Gallery Page
 Route::get('/gallery', [GalleryPageController::class, 'index'])->name('gallery');
 
+// ---------------------------------------------------------------------------
+// WVAC Attendance (unlisted — not linked anywhere in the site nav)
+// ---------------------------------------------------------------------------
+Route::get('/wvac/attendance',         [\App\Http\Controllers\WvacAttendanceController::class, 'index'])->name('wvac.attendance');
+Route::post('/wvac/attendance/toggle', [\App\Http\Controllers\WvacAttendanceController::class, 'toggle'])->name('wvac.attendance.toggle');
+Route::post('/wvac/attendance/add',    [\App\Http\Controllers\WvacAttendanceController::class, 'add'])->name('wvac.attendance.add');
+Route::post('/wvac/attendance/submit', [\App\Http\Controllers\WvacAttendanceController::class, 'submit'])->name('wvac.attendance.submit');
+
 // Cart Routes
 Route::post('/cart/add',      [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove',   [CartController::class, 'remove'])->name('cart.remove');
