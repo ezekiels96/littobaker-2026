@@ -42,6 +42,7 @@
             padding-top: max(10px, env(safe-area-inset-top));
             border-bottom: 1px solid var(--line);
         }
+        .logobar a { display: inline-block; }
         .logobar img { height: 40px; width: auto; max-width: 100%; display: inline-block; }
 
         /* ---------- Header ---------- */
@@ -260,7 +261,9 @@
 </head>
 <body>
     <div class="logobar">
-        <img src="{{ asset('images/wvac-logo.jpg') }}" alt="West Valley Christian Alliance Church">
+        <a href="{{ route('wvac.home') }}" aria-label="Go to WVAC home">
+            <img src="{{ asset('images/wvac-logo.jpg') }}" alt="West Valley Christian Alliance Church">
+        </a>
     </div>
 
     <div class="topbar">
@@ -428,13 +431,26 @@
         const searchInput = document.getElementById('searchInput');
         const searchWrap  = document.getElementById('searchWrap');
 
+        function updateHeaderCollapse() {
+            if (searchWrap.classList.contains('open')) {
+                document.body.classList.remove('scrolled');
+                return;
+            }
+
+            const y = window.scrollY;
+            if (y > 120) document.body.classList.add('scrolled');
+            else if (y < 24) document.body.classList.remove('scrolled');
+        }
+
         window.toggleSearch = () => {
             const open = searchWrap.classList.toggle('open');
             document.getElementById('searchToggle').classList.toggle('active', open);
             if (open) {
+                document.body.classList.remove('scrolled');
                 searchInput.focus();
             } else {
                 clearSearch(false);
+                updateHeaderCollapse();
             }
         };
 
@@ -472,6 +488,7 @@
             if (keep) {
                 searchWrap.classList.remove('open');
                 document.getElementById('searchToggle').classList.remove('active');
+                updateHeaderCollapse();
             } else if (searchWrap.classList.contains('open')) {
                 searchInput.focus();
             }
@@ -628,9 +645,7 @@
             if (scrollTicking) return;
             scrollTicking = true;
             requestAnimationFrame(() => {
-                const y = window.scrollY;
-                if (y > 120) document.body.classList.add('scrolled');
-                else if (y < 24) document.body.classList.remove('scrolled');
+                updateHeaderCollapse();
                 scrollTicking = false;
             });
         }, { passive: true });
