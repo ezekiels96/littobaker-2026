@@ -104,6 +104,7 @@
             border-radius: 16px; cursor: pointer; position: relative;
             transition: transform .08s, border-color .12s, background .12s;
             font-family: inherit;
+            -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
         }
         .tile:active { transform: scale(.97); }
         .tile .nm { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.2; }
@@ -125,26 +126,7 @@
 
         .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 26px 10px; font-size: 14px; }
 
-        /* ---------- Add person ---------- */
-        .addbtn {
-            grid-column: 1 / -1; min-height: 54px;
-            border: 2px dashed #c7cdd6; background: #fff; color: var(--navy);
-            border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer;
-            font-family: inherit;
-        }
-        .addbtn:active { transform: scale(.98); }
-        .addform {
-            grid-column: 1 / -1; background: #fff; border: 1.5px solid var(--line);
-            border-radius: 16px; padding: 14px; display: none; flex-direction: column; gap: 10px;
-        }
-        .addform.open { display: flex; }
-        .addform input {
-            width: 100%; padding: 12px 14px; font-size: 16px; font-family: inherit;
-            border: 1.5px solid var(--line); border-radius: 12px; outline: none;
-        }
-        .addform input:focus { border-color: var(--teal); }
-        .addform .row { display: flex; gap: 8px; }
-        .addform .row button { flex: 1; padding: 12px; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; cursor: pointer; font-family: inherit; }
+        /* ---------- Add person buttons ---------- */
         .btn-save { background: var(--teal); color: #fff; }
         .btn-cancel { background: #eef0f3; color: var(--ink); }
 
@@ -171,6 +153,109 @@
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .toast.err { background: #b91c1c; }
+
+        /* ---------- Tool row (search + add) ---------- */
+        .toolrow { display: flex; gap: 8px; margin-top: 10px; }
+        .tool-btn {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+            background: rgba(255,255,255,.12); color: #fff;
+            border: 1px solid rgba(255,255,255,.2); border-radius: 12px;
+            padding: 9px 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: background .15s;
+        }
+        .tool-btn:active { transform: scale(.98); }
+        .tool-btn.active { background: rgba(255,255,255,.28); }
+
+        /* ---------- Search bar ---------- */
+        .searchwrap { display: none; margin-top: 8px; position: relative; }
+        .searchwrap.open { display: block; }
+        .searchwrap input {
+            width: 100%; padding: 11px 38px 11px 14px; font-size: 16px; font-family: inherit;
+            border: 1px solid rgba(255,255,255,.2); border-radius: 12px; outline: none;
+            background: #fff; color: var(--ink);
+        }
+        .search-clear {
+            position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+            width: 26px; height: 26px; border: 0; border-radius: 50%;
+            background: #eef0f3; color: var(--muted); font-size: 15px; font-weight: 700;
+            cursor: pointer; line-height: 1; display: none;
+        }
+        .searchwrap.has-text .search-clear { display: flex; align-items: center; justify-content: center; }
+
+        .tile.hide { display: none; }
+
+        /* ---------- Empty / no-match states ---------- */
+        .empty-hint, .nomatch { grid-column: 1 / -1; text-align: center; }
+        .empty-hint { color: var(--muted); padding: 30px 12px; font-size: 14px; line-height: 1.5; }
+        .nomatch {
+            display: none; min-height: 54px; margin-top: 4px;
+            border: 2px dashed #c7cdd6; background: #fff; color: var(--navy);
+            border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer;
+            font-family: inherit; padding: 14px;
+        }
+        .nomatch:active { transform: scale(.98); }
+
+        /* ---------- Add modal ---------- */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 60;
+            background: rgba(16,35,63,.5); backdrop-filter: blur(2px);
+            align-items: flex-start; justify-content: center;
+            padding: calc(14vh + env(safe-area-inset-top)) 16px 16px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            width: 100%; max-width: 420px; background: #fff; border-radius: 20px;
+            padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .modal h2 { margin: 0; font-size: 18px; font-weight: 800; color: var(--navy); }
+        .modal-seg { display: flex; background: #eef0f3; border-radius: 12px; padding: 4px; gap: 4px; }
+        .modal-seg button {
+            flex: 1; border: 0; background: transparent; color: var(--muted);
+            font-size: 14px; font-weight: 700; padding: 9px 6px; border-radius: 9px;
+            cursor: pointer; font-family: inherit;
+        }
+        #msvc-english.active { background: var(--english); color: #fff; }
+        #msvc-chinese.active { background: var(--chinese); color: #fff; }
+        .modal input {
+            width: 100%; padding: 12px 14px; font-size: 16px; font-family: inherit;
+            border: 1.5px solid var(--line); border-radius: 12px; outline: none;
+        }
+        .modal input:focus { border-color: var(--teal); }
+        .modal-row { display: flex; gap: 8px; margin-top: 2px; }
+        .modal-row button { flex: 1; padding: 13px; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; cursor: pointer; font-family: inherit; }
+        /* Edit mode: no service switch, name only */
+        #addModal.editing .modal-seg { display: none; }
+
+        /* ---------- Long-press action sheet ---------- */
+        .sheet-overlay {
+            display: none; position: fixed; inset: 0; z-index: 70;
+            background: rgba(16,35,63,.5); backdrop-filter: blur(2px);
+            align-items: flex-end; justify-content: center;
+        }
+        .sheet-overlay.open { display: flex; }
+        .sheet {
+            width: 100%; max-width: 480px; background: #fff;
+            border-radius: 20px 20px 0 0; padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .sheet-title { text-align: center; font-size: 13px; font-weight: 700; color: var(--muted); padding: 10px 8px 6px; }
+        .sheet-btn {
+            width: 100%; padding: 16px; font-size: 16px; font-weight: 700; border: 0;
+            border-radius: 14px; background: #f2f4f7; color: var(--ink); cursor: pointer; font-family: inherit;
+        }
+        .sheet-btn:active { transform: scale(.99); }
+        .sheet-btn.danger { color: #b91c1c; }
+        .sheet-btn.cancel { background: transparent; color: var(--muted); }
+
+        /* ---------- Collapse header on scroll (more names on screen) ---------- */
+        body.scrolled .logobar,
+        body.scrolled .brand,
+        body.scrolled .countcard,
+        body.scrolled .toolrow,
+        body.scrolled .searchwrap { display: none; }
+        body.scrolled .topbar { padding-top: max(6px, env(safe-area-inset-top)); padding-bottom: 6px; }
+        body.scrolled .seg { margin-top: 0; }
     </style>
 </head>
 <body>
@@ -206,13 +291,25 @@
                 {{ $stats['english']['prev2_label'] }}: {{ $stats['english']['prev2'] }}
             </span>
         </div>
+
+        <div class="toolrow">
+            <button class="tool-btn" id="searchToggle" onclick="toggleSearch()">🔍 Search</button>
+            <button class="tool-btn" id="addToggle" onclick="openAddModal()">＋ Add person</button>
+        </div>
+
+        <div class="searchwrap" id="searchWrap">
+            <input type="search" id="searchInput" placeholder="Search names…" autocomplete="off"
+                   oninput="applySearch()" enterkeyhint="search">
+            <button class="search-clear" id="searchClear" onclick="clearSearch(true)" aria-label="Clear search">✕</button>
+        </div>
     </div>
 
     @foreach(['english', 'chinese'] as $svc)
         <div class="panel {{ $svc === 'english' ? 'active' : '' }}" id="panel-{{ $svc }}">
             <div class="grid" id="grid-{{ $svc }}">
-                @forelse($byService[$svc] as $a)
+                @foreach($byService[$svc] as $a)
                     <button class="tile" data-id="{{ $a->id }}" data-present="{{ $a->present ? '1' : '0' }}"
+                            data-name="{{ $a->name }}" data-zh="{{ $a->name_zh }}"
                             onclick="toggleTile(this)">
                         <span class="tick">✓</span>
                         @if($svc === 'chinese' && $a->name_zh)
@@ -223,19 +320,12 @@
                             @if($a->name_zh)<span class="nm2">{{ $a->name_zh }}</span>@endif
                         @endif
                     </button>
-                @empty
-                @endforelse
+                @endforeach
 
-                <button class="addbtn" onclick="openAdd('{{ $svc }}')">+ Add person</button>
-
-                <div class="addform" id="addform-{{ $svc }}">
-                    <input type="text" id="add-name-{{ $svc }}" placeholder="Name (English)" autocomplete="off">
-                    <input type="text" id="add-zh-{{ $svc }}" placeholder="中文名 (optional)" autocomplete="off">
-                    <div class="row">
-                        <button class="btn-cancel" onclick="closeAdd('{{ $svc }}')">Cancel</button>
-                        <button class="btn-save" onclick="savePerson('{{ $svc }}')">Add &amp; mark here</button>
-                    </div>
+                <div class="empty-hint" id="empty-{{ $svc }}" @style(['display:none' => count($byService[$svc]) > 0])>
+                    No one added yet. Tap <strong>＋ Add person</strong> above to add someone.
                 </div>
+                <button class="nomatch" id="nomatch-{{ $svc }}" onclick="addFromSearch('{{ $svc }}')"></button>
             </div>
         </div>
     @endforeach
@@ -247,6 +337,31 @@
         <button class="btn-both" id="bothBtn" onclick="submitAttendance('both')">Both</button>
     </div>
 
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <h2 id="modalTitle">Add person</h2>
+            <div class="modal-seg">
+                <button type="button" id="msvc-english" onclick="setModalSvc('english')">English</button>
+                <button type="button" id="msvc-chinese" onclick="setModalSvc('chinese')">中文 Chinese</button>
+            </div>
+            <input type="text" id="m-name" placeholder="Name (English)" autocomplete="off">
+            <input type="text" id="m-zh" placeholder="中文名 (optional)" autocomplete="off">
+            <div class="modal-row">
+                <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+                <button class="btn-save" id="modalSave" onclick="savePerson()">Add &amp; mark here</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sheet-overlay" id="personSheet">
+        <div class="sheet">
+            <div class="sheet-title" id="sheetName"></div>
+            <button class="sheet-btn" onclick="editPerson()">✏️ Edit name</button>
+            <button class="sheet-btn danger" onclick="deletePerson()">🗑️ Delete</button>
+            <button class="sheet-btn cancel" onclick="closeSheet()">Cancel</button>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
@@ -256,6 +371,8 @@
         const routes = {
             toggle: @json(route('wvac.attendance.toggle')),
             add:    @json(route('wvac.attendance.add')),
+            update: @json(route('wvac.attendance.update')),
+            delete: @json(route('wvac.attendance.delete')),
             submit: @json(route('wvac.attendance.submit')),
         };
         const stats = @json($stats);
@@ -288,9 +405,13 @@
 
         // ---- Toggle present (optimistic) ----
         window.toggleTile = (el) => {
+            if (didLongPress) { didLongPress = false; return; }  // ignore the click after a long-press
             const now = el.dataset.present === '1' ? '0' : '1';
             el.dataset.present = now;               // optimistic
             refreshCount();
+            // When checking someone IN after a search, clear the search so the
+            // roster is ready for the next person.
+            if (now === '1' && searchInput.value.trim()) clearSearch(false);
             post(routes.toggle, { attendee_id: el.dataset.id, date: selectedDate })
                 .then(d => {
                     el.dataset.present = d.present ? '1' : '0';
@@ -303,29 +424,132 @@
                 });
         };
 
-        // ---- Add person ----
-        window.openAdd = (svc) => {
-            document.getElementById('addform-' + svc).classList.add('open');
-            document.getElementById('add-name-' + svc).focus();
+        // ---- Search ----
+        const searchInput = document.getElementById('searchInput');
+        const searchWrap  = document.getElementById('searchWrap');
+
+        window.toggleSearch = () => {
+            const open = searchWrap.classList.toggle('open');
+            document.getElementById('searchToggle').classList.toggle('active', open);
+            if (open) {
+                searchInput.focus();
+            } else {
+                clearSearch(false);
+            }
         };
-        window.closeAdd = (svc) => {
-            document.getElementById('addform-' + svc).classList.remove('open');
-            document.getElementById('add-name-' + svc).value = '';
-            document.getElementById('add-zh-' + svc).value = '';
+
+        window.applySearch = () => {
+            const q = searchInput.value.trim().toLowerCase();
+            searchWrap.classList.toggle('has-text', q.length > 0);
+
+            ['english', 'chinese'].forEach(svc => {
+                const grid = document.getElementById('grid-' + svc);
+                const tiles = grid.querySelectorAll('.tile');
+                let visible = 0;
+                tiles.forEach(t => {
+                    const hit = !q || t.textContent.toLowerCase().includes(q);
+                    t.classList.toggle('hide', !hit);
+                    if (hit) visible++;
+                });
+                // Empty-state hint only when there is genuinely no one and no search.
+                const empty = document.getElementById('empty-' + svc);
+                if (empty) empty.style.display = (!q && tiles.length === 0) ? '' : 'none';
+                // "Add <query>" shortcut when a search matches nobody.
+                const nomatch = document.getElementById('nomatch-' + svc);
+                if (q && visible === 0) {
+                    nomatch.textContent = '+ Add “' + searchInput.value.trim() + '”';
+                    nomatch.style.display = 'block';
+                } else {
+                    nomatch.style.display = 'none';
+                }
+            });
         };
-        window.savePerson = (svc) => {
-            const name = document.getElementById('add-name-' + svc).value.trim();
-            const zh   = document.getElementById('add-zh-' + svc).value.trim();
+
+        // keep=true also collapses the search bar; keep=false just resets it
+        window.clearSearch = (keep) => {
+            searchInput.value = '';
+            applySearch();
+            if (keep) {
+                searchWrap.classList.remove('open');
+                document.getElementById('searchToggle').classList.remove('active');
+            } else if (searchWrap.classList.contains('open')) {
+                searchInput.focus();
+            }
+        };
+
+        // ---- Add person (shared modal) ----
+        let modalSvc = 'english';
+        const addModal = document.getElementById('addModal');
+
+        window.setModalSvc = (svc) => {
+            modalSvc = svc;
+            document.getElementById('msvc-english').classList.toggle('active', svc === 'english');
+            document.getElementById('msvc-chinese').classList.toggle('active', svc === 'chinese');
+        };
+
+        let editingId = null, editTile = null;
+
+        window.openAddModal = (svc, prefill) => {
+            editingId = null; editTile = null;
+            document.getElementById('modalTitle').textContent = 'Add person';
+            document.getElementById('modalSave').textContent = 'Add & mark here';
+            addModal.classList.remove('editing');
+            setModalSvc(svc || activeService);
+            document.getElementById('m-name').value = prefill || '';
+            document.getElementById('m-zh').value = '';
+            addModal.classList.add('open');
+            document.getElementById('m-name').focus();
+        };
+        window.closeAddModal = () => addModal.classList.remove('open');
+
+        // Opened from the "Add <query>" no-match button: prefill the name.
+        window.addFromSearch = (svc) => openAddModal(svc, searchInput.value.trim());
+
+        window.savePerson = () => {
+            const name = document.getElementById('m-name').value.trim();
+            const zh   = document.getElementById('m-zh').value.trim();
             if (!name && !zh) { toast('Enter a name', true); return; }
+
+            // Edit mode: rename an existing person.
+            if (editingId) {
+                post(routes.update, { attendee_id: editingId, name: name || null, name_zh: zh || null })
+                    .then(d => {
+                        paintTile(editTile, tileSvc(editTile), d.attendee);
+                        closeAddModal();
+                        toast('Saved ✓');
+                    })
+                    .catch(() => toast('Could not save', true));
+                return;
+            }
+
+            const svc = modalSvc;
             post(routes.add, { name: name || zh, name_zh: zh || null, service: svc, date: selectedDate })
                 .then(d => {
                     addTile(svc, d.attendee);
-                    closeAdd(svc);
+                    closeAddModal();
+                    if (searchInput.value.trim()) clearSearch(false);
                     refreshCount();
                     toast('Added ✓');
                 })
                 .catch(() => toast('Could not add', true));
         };
+
+        // close modal when tapping the backdrop
+        addModal.addEventListener('click', e => { if (e.target === addModal) closeAddModal(); });
+
+        // Paint a tile's name (and data-* used by search / edit) for a service.
+        function paintTile(btn, svc, a) {
+            btn.dataset.name = a.name || '';
+            btn.dataset.zh   = a.name_zh || '';
+            const primary   = (svc === 'chinese' && a.name_zh) ? a.name_zh : a.name;
+            const secondary = (svc === 'chinese' && a.name_zh) ? a.name : (a.name_zh || '');
+            btn.innerHTML = '<span class="tick">✓</span>' +
+                '<span class="nm"></span>' + (secondary ? '<span class="nm2"></span>' : '');
+            btn.querySelector('.nm').textContent = primary;
+            if (secondary) btn.querySelector('.nm2').textContent = secondary;
+        }
+
+        function tileSvc(t) { return t.closest('.grid').id.replace('grid-', ''); }
 
         function addTile(svc, a) {
             const grid = document.getElementById('grid-' + svc);
@@ -334,14 +558,82 @@
             btn.dataset.id = a.id;
             btn.dataset.present = '1';
             btn.setAttribute('onclick', 'toggleTile(this)');
-            const primary = (svc === 'chinese' && a.name_zh) ? a.name_zh : a.name;
-            const secondary = (svc === 'chinese' && a.name_zh) ? a.name : (a.name_zh || '');
-            btn.innerHTML = '<span class="tick">✓</span>' +
-                '<span class="nm"></span>' + (secondary ? '<span class="nm2"></span>' : '');
-            btn.querySelector('.nm').textContent = primary;
-            if (secondary) btn.querySelector('.nm2').textContent = secondary;
-            grid.insertBefore(btn, grid.querySelector('.addbtn'));
+            paintTile(btn, svc, a);
+            grid.insertBefore(btn, document.getElementById('empty-' + svc));
+            document.getElementById('empty-' + svc).style.display = 'none';
         }
+
+        // ---- Long-press a name → edit / delete ----
+        let menuTile = null, pressTimer = null, didLongPress = false, psx = 0, psy = 0;
+        const personSheet = document.getElementById('personSheet');
+
+        function openPersonMenu(tile) {
+            menuTile = tile;
+            document.getElementById('sheetName').textContent = tile.dataset.name || tile.querySelector('.nm').textContent;
+            personSheet.style.pointerEvents = 'none';   // let the ghost click pass under the sheet
+            personSheet.classList.add('open');
+            setTimeout(() => { personSheet.style.pointerEvents = ''; }, 400);
+        }
+        window.closeSheet = () => { personSheet.classList.remove('open'); menuTile = null; };
+        personSheet.addEventListener('click', e => { if (e.target === personSheet) closeSheet(); });
+
+        window.editPerson = () => {
+            if (!menuTile) return;
+            editingId = menuTile.dataset.id;
+            editTile  = menuTile;
+            closeSheet();
+            document.getElementById('modalTitle').textContent = 'Edit person';
+            document.getElementById('modalSave').textContent = 'Save';
+            addModal.classList.add('editing');
+            document.getElementById('m-name').value = editTile.dataset.name || '';
+            document.getElementById('m-zh').value = editTile.dataset.zh || '';
+            addModal.classList.add('open');
+            document.getElementById('m-name').focus();
+        };
+
+        window.deletePerson = () => {
+            if (!menuTile) return;
+            const tile = menuTile;
+            closeSheet();
+            post(routes.delete, { attendee_id: tile.dataset.id, date: selectedDate })
+                .then(() => { tile.remove(); refreshCount(); toast('Deleted'); })
+                .catch(() => toast('Could not delete', true));
+        };
+
+        document.querySelectorAll('.grid').forEach(grid => {
+            grid.addEventListener('pointerdown', e => {
+                const tile = e.target.closest('.tile');
+                if (!tile) return;
+                didLongPress = false; psx = e.clientX; psy = e.clientY;
+                clearTimeout(pressTimer);
+                pressTimer = setTimeout(() => {
+                    didLongPress = true;
+                    if (navigator.vibrate) navigator.vibrate(15);
+                    openPersonMenu(tile);
+                }, 500);
+            });
+            grid.addEventListener('pointermove', e => {
+                if (pressTimer && (Math.abs(e.clientX - psx) > 10 || Math.abs(e.clientY - psy) > 10)) {
+                    clearTimeout(pressTimer); pressTimer = null;
+                }
+            });
+            ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev =>
+                grid.addEventListener(ev, () => { clearTimeout(pressTimer); pressTimer = null; }));
+            grid.addEventListener('contextmenu', e => e.preventDefault());
+        });
+
+        // ---- Collapse the header on scroll so more names fit ----
+        let scrollTicking = false;
+        window.addEventListener('scroll', () => {
+            if (scrollTicking) return;
+            scrollTicking = true;
+            requestAnimationFrame(() => {
+                const y = window.scrollY;
+                if (y > 120) document.body.classList.add('scrolled');
+                else if (y < 24) document.body.classList.remove('scrolled');
+                scrollTicking = false;
+            });
+        }, { passive: true });
 
         // ---- Submit ----
         window.submitAttendance = (scope) => {

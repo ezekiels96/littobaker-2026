@@ -40,10 +40,14 @@ Route::get('/gallery', [GalleryPageController::class, 'index'])->name('gallery')
 // ---------------------------------------------------------------------------
 // WVAC Attendance (unlisted — not linked anywhere in the site nav)
 // ---------------------------------------------------------------------------
-Route::get('/wvac/attendance',         [\App\Http\Controllers\WvacAttendanceController::class, 'index'])->name('wvac.attendance');
-Route::post('/wvac/attendance/toggle', [\App\Http\Controllers\WvacAttendanceController::class, 'toggle'])->name('wvac.attendance.toggle');
-Route::post('/wvac/attendance/add',    [\App\Http\Controllers\WvacAttendanceController::class, 'add'])->name('wvac.attendance.add');
-Route::post('/wvac/attendance/submit', [\App\Http\Controllers\WvacAttendanceController::class, 'submit'])->name('wvac.attendance.submit');
+Route::get('/wvcac',                    [\App\Http\Controllers\WvacAttendanceController::class, 'landing'])->name('wvac.home');
+Route::get('/wvcac/report',             [\App\Http\Controllers\WvacAttendanceController::class, 'report'])->name('wvac.report');
+Route::get('/wvcac/attendance',         [\App\Http\Controllers\WvacAttendanceController::class, 'index'])->name('wvac.attendance');
+Route::post('/wvcac/attendance/toggle', [\App\Http\Controllers\WvacAttendanceController::class, 'toggle'])->name('wvac.attendance.toggle');
+Route::post('/wvcac/attendance/add',    [\App\Http\Controllers\WvacAttendanceController::class, 'add'])->name('wvac.attendance.add');
+Route::post('/wvcac/attendance/update', [\App\Http\Controllers\WvacAttendanceController::class, 'update'])->name('wvac.attendance.update');
+Route::post('/wvcac/attendance/delete', [\App\Http\Controllers\WvacAttendanceController::class, 'destroy'])->name('wvac.attendance.delete');
+Route::post('/wvcac/attendance/submit', [\App\Http\Controllers\WvacAttendanceController::class, 'submit'])->name('wvac.attendance.submit');
 
 // Cart Routes
 Route::post('/cart/add',      [CartController::class, 'add'])->name('cart.add');
